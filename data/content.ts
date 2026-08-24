@@ -220,6 +220,11 @@ export interface BuiltWithRow {
 
 export const builtWith: BuiltWithRow[] = [
   {
+    section: 'Root layout',
+    components: ['ThemeProvider', 'ToastProvider'],
+    note: 'Dark by default, with a pre-paint script so the first frame is never the wrong theme.',
+  },
+  {
     section: 'Site header',
     components: ['Navbar', 'Badge', 'Button', 'ThemeToggle'],
     note: 'Collapses to a mobile sheet on its own; the theme toggle writes one attribute on <html>.',
@@ -271,7 +276,7 @@ export const builtWith: BuiltWithRow[] = [
   },
   {
     section: 'Chat app — shell',
-    components: ['Sidebar', 'Input', 'Button', 'RelativeTime', 'EmptyState'],
+    components: ['Sidebar', 'Input', 'Button', 'RelativeTime', 'EmptyState', 'Container'],
     note: 'Conversation rows are Sidebar.Item rendered asChild over real buttons.',
   },
   {
@@ -286,7 +291,7 @@ export const builtWith: BuiltWithRow[] = [
   },
   {
     section: 'This page',
-    components: ['Table', 'Breadcrumb', 'Heading', 'Text', 'Stack', 'Container'],
+    components: ['Table', 'Breadcrumb', 'Heading', 'Text', 'Stack', 'Section'],
     note: 'Every component name in the table deep-links to its own docs page.',
   },
 ]
