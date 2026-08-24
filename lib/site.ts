@@ -1,12 +1,23 @@
 /** Single source of truth for URLs, promotion links and UTM tagging. */
 
+const REPO_OWNER = 'intellectwithvivek'
+const REPO_NAME = 'chatterbox'
+
 export const site = {
   name: 'ChatterBox',
   tagline: 'Ship a chat UI before lunch',
-  url: 'https://aichat-vivekui.vercel.app',
-  repo: 'nextjs-ai-chatbot-ui-template-vivekui',
-  repoUrl:
-    'https://github.com/intellectwithvivek/nextjs-ai-chatbot-ui-template-vivekui',
+  url: 'https://chatterbox.vivekkumarsingh.in',
+  /** owner/name, as GitHub renders it. */
+  repoSlug: `${REPO_OWNER}/${REPO_NAME}`,
+  repo: REPO_NAME,
+  repoUrl: `https://github.com/${REPO_OWNER}/${REPO_NAME}`,
+  cloneUrl: `https://github.com/${REPO_OWNER}/${REPO_NAME}.git`,
+  /** Ready to paste into a terminal — offered with a CopyButton site-wide. */
+  cloneCommand: `git clone https://github.com/${REPO_OWNER}/${REPO_NAME}.git`,
+  /** GitHub's "create a repo from this template" route. */
+  templateUrl: `https://github.com/${REPO_OWNER}/${REPO_NAME}/generate`,
+  issuesUrl: `https://github.com/${REPO_OWNER}/${REPO_NAME}/issues`,
+  licenseUrl: `https://github.com/${REPO_OWNER}/${REPO_NAME}/blob/main/LICENSE`,
   description:
     'A free, open-source AI chatbot UI template for React and Next.js. Chat thread, typing indicator, code blocks with copy and charts inside chat bubbles — built with VivekUI, zero runtime dependencies.',
 } as const

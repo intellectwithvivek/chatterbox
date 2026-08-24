@@ -11,6 +11,7 @@ import {
   Text,
 } from '@the_viveksingh/vivek-ui'
 
+import { CloneBlock } from '@/components/clone-block'
 import { InstallCommand } from '@/components/install-command'
 import { JsonLd } from '@/components/json-ld'
 import { builtWith } from '@/data/content'
@@ -128,6 +129,7 @@ export default function BuiltWithPage() {
                       {row.components.map((name) => (
                         <a
                           key={name}
+                          className="comp-link"
                           href={componentDocs(name)}
                           target="_blank"
                           rel="noopener noreferrer"
@@ -175,7 +177,7 @@ export default function BuiltWithPage() {
             </Button>
             <Button asChild size="lg" variant="outline">
               <a
-                href={`${site.repoUrl}/generate`}
+                href={site.templateUrl}
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -184,8 +186,10 @@ export default function BuiltWithPage() {
             </Button>
           </Stack>
 
+          <CloneBlock heading="Clone this template" />
+
           <Text size="sm" tone="muted">
-            Template repository: <code>{site.repo}</code> · Library:{' '}
+            Template repository: <code>{site.repoSlug}</code> · Library:{' '}
             <a href={vivekui.npm} target="_blank" rel="noopener noreferrer">
               {vivekui.pkg} on npm
             </a>{' '}

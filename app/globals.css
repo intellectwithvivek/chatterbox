@@ -510,6 +510,54 @@ a:not([class]):hover {
   white-space: nowrap;
 }
 
+/* --- Tap targets --------------------------------------------------------- */
+
+/*
+ * WCAG 2.5.8 wants a 24x24 minimum. Links sitting inside a sentence are
+ * explicitly exempt (their size is constrained by the surrounding
+ * line-height), so prose links are left alone. Everything below is a
+ * *standalone* link — a nav row, a footer column entry, a breadcrumb hop, a
+ * table token — where the exemption does not apply and an 18px-tall target is
+ * a genuine miss on a phone.
+ *
+ * `vk-` class names are public API, so styling them here is supported.
+ */
+:where(.vk-footer__link, .vk-breadcrumb__link, .vk-navbar__brand, .footer-repo, .nav-badge) {
+  display: inline-flex;
+  align-items: center;
+  min-block-size: 1.5rem;
+}
+
+/* The badge is its own visual affordance; a link underline through a pill
+   just looks like a mistake. (The library resets its own anchors, but a
+   plain <a> we introduce still gets the UA default.) */
+.nav-badge {
+  text-decoration: none;
+}
+
+/* Component-name tokens in the /built-with table: chip-shaped, so each one
+   is a comfortable target rather than 18px of underlined text. */
+.comp-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  /* three-letter names like FAQ and CTA would otherwise land at 23px wide */
+  min-inline-size: 1.5rem;
+  min-block-size: 1.625rem;
+  border-radius: var(--vk-radius-sm, 6px);
+  text-decoration: none;
+}
+
+.comp-link > code {
+  transition: border-color 120ms ease, color 120ms ease;
+}
+
+.comp-link:hover > code,
+.comp-link:focus-visible > code {
+  border-color: var(--vk-color-primary);
+  color: var(--vk-color-primary);
+}
+
 /* --- Utilities ---------------------------------------------------------- */
 
 .install-row {
@@ -537,12 +585,102 @@ a:not([class]):hover {
   overflow-x: auto;
 }
 
-/* The navbar badge is the first thing to go when the bar gets tight.
-   `vk-navbar` is the container Navbar itself declares. */
-@container vk-navbar (width < 62rem) {
-  .hide-sm {
+/* --- Navbar density ----------------------------------------------------- */
+
+/* The bar carries a lot: six links, the VivekUI badge, a clone button, the
+   repo link, the theme toggle and a CTA. `vk-navbar` is the container the
+   Navbar declares itself, so these thresholds track the bar's own width
+   rather than the viewport, and they shed items in priority order.
+   The repo link and the theme toggle never drop. */
+
+.nav-badge,
+.nav-clone {
+  display: none;
+}
+
+/* Clone command: back once the links have gone inline and there is room. */
+@container vk-navbar (width >= 60rem) {
+  .nav-clone {
+    display: inline-flex;
+  }
+}
+
+/* Promotion badge: last in, first out. */
+@container vk-navbar (width >= 78rem) {
+  .nav-badge {
+    display: inline-flex;
+  }
+}
+
+/* Below the mobile-sheet breakpoint the sheet carries "Chat demo", so the
+   CTA is redundant and the bar needs the room. */
+@container vk-navbar (width < 25rem) {
+  .nav-cta {
     display: none;
   }
+}
+
+/* Repo links duplicated into the mobile sheet: hidden once the links row
+   goes inline and Navbar.Actions is showing them instead. */
+@container vk-navbar (width >= 48rem) {
+  .sheet-only {
+    display: none;
+  }
+}
+
+/* An icon-only button should be square, not text-shaped. */
+.nav-icon {
+  padding-inline: 0.5rem;
+}
+
+/* --- Clone section ------------------------------------------------------ */
+
+.clone-grid {
+  display: grid;
+  gap: var(--vk-space-6, 1.5rem);
+  align-items: start;
+}
+
+@media (min-width: 60rem) {
+  /* The clone column has to fit `git clone https://…/chatterbox.git` on one
+     line — at 1.15fr it wrapped by a few pixels and read as two commands. */
+  .clone-grid {
+    grid-template-columns: 1.45fr 1fr;
+    gap: var(--vk-space-8, 2rem);
+  }
+}
+
+/* --- Footer ------------------------------------------------------------- */
+
+/* The bottom bar is a space-between flex row; this makes our stack own the
+   full width instead of sitting in one half of it. */
+.footer-bottom {
+  flex: 1;
+  min-inline-size: 0;
+}
+
+/* Install and clone, side by side once there is room for both. */
+.footer-cmds {
+  display: grid;
+  gap: var(--vk-space-4, 1rem);
+  grid-template-columns: repeat(auto-fit, minmax(min(20rem, 100%), 1fr));
+  align-items: start;
+}
+
+/* owner/name, under the brand block. */
+.footer-repo {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4375rem;
+  font-family: var(--vk-font-mono);
+  font-size: 0.8125rem;
+  color: var(--vk-color-muted);
+  text-decoration: none;
+}
+
+.footer-repo:hover {
+  color: var(--vk-color-primary);
+  text-decoration: underline;
 }
 
 .vh {
