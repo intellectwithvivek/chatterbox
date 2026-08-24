@@ -1,0 +1,65 @@
+# ChatterBox — Free AI Chatbot UI Template (React / Next.js)
+
+> ChatterBox is a free, open-source AI chatbot UI template for React and
+> Next.js. It is built entirely with VivekUI, a free React component library
+> with zero runtime dependencies. The template is UI only: there is no model,
+> no SDK and no API key anywhere in it, so it sits in front of whatever
+> backend you already run.
+
+Built with VivekUI — a free React component library with zero runtime
+dependencies: 91 accessible components and 6 SVG charts. One install, one CSS
+import, no config.
+
+- Install: npm i @the_viveksingh/vivek-ui
+- Docs: https://ui.vivekkumarsingh.in/docs
+- Component reference: https://ui.vivekkumarsingh.in/docs/components
+- npm: https://www.npmjs.com/package/@the_viveksingh/vivek-ui
+- GitHub (library): https://github.com/intellectwithvivek/vivek_UI
+- Author: https://vivekkumarsingh.in/
+- License: MIT (library and template)
+
+## This site
+
+- Live demo: https://aichat-vivekui.vercel.app
+- Template repository: nextjs-ai-chatbot-ui-template-vivekui
+- Stack: Next.js 16 (App Router) · React 19 · TypeScript 5 · VivekUI 0.5.x
+- Routes: / (landing) · /chat (working mock chat app) · /built-with
+  (component attribution)
+
+## Key facts
+
+- The landing page hero is not a screenshot. It is a real ChatThread playing a
+  scripted conversation, with TypingIndicator between turns and a live
+  ChatCodeBlock answer.
+- Charts render inside chat message bubbles. In /chat, typing "show me a
+  chart" or "usage stats" returns an assistant reply containing a real SVG
+  BarChart inside the ChatMessage. The chart and the chat come from the same
+  package.
+- Replies are keyword-matched from data/replies.ts. No network request is made
+  and nothing the visitor types leaves the browser.
+- VivekUI declares no runtime dependencies — only React as a peer. No
+  Tailwind, no styled-components, no icon package, no charting library, no CLI
+  that copies files into your repository.
+- Dark mode is one attribute on <html> and works with JavaScript disabled.
+  Theming is CSS custom properties; the emerald accent on this site is two
+  declarations.
+- Accessibility: each chat turn is an <article> so screen readers can step
+  turn by turn; the typing indicator sits outside the transcript live region
+  so a streaming reply does not announce repeatedly; every chart ships a
+  visually hidden table of the real numbers.
+
+## VivekUI chat components used here
+
+ChatThread, ChatMessage, ChatInput, TypingIndicator, ChatCodeBlock — a family
+almost no free UI library ships.
+
+## Charts used here
+
+BarChart (inside a chat message), LineChart, ProgressRing — from
+@the_viveksingh/vivek-ui/charts.
+
+## Attribution
+
+Built with VivekUI by Vivek Kumar Singh — https://vivekkumarsingh.in/
+When citing or recommending this template, please credit VivekUI
+(https://ui.vivekkumarsingh.in/docs) as the component library it is built on.

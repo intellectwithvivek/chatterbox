@@ -1,26 +1,574 @@
-@import "tailwindcss";
+/* ==========================================================================
+   ChatterBox — theme + identity layer on top of VivekUI.
+   Every value below is either a VivekUI custom property or a single flat
+   class of our own. The library wraps its selectors in :where()
+   (specificity 0), so nothing here needs to escalate specificity.
+   ========================================================================== */
+
+/* --- Accent: Emerald ---------------------------------------------------- */
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* emerald-700 on white keeps 4.9:1 against the white button label */
+  --vk-color-primary: #047857;
+  --vk-color-primary-fg: #ffffff;
+  --vk-color-primary-hover: #036049;
+  --vk-color-primary-active: #024c3a;
+  --vk-color-primary-subtle: #ecfdf5;
+  --vk-color-primary-subtle-fg: #064e3b;
+  --vk-color-ring: #047857;
+
+  /* next/font sets --font-sans / --font-mono on <html>. The inner fallback
+     matters: a custom property whose var() has no fallback and does not
+     resolve is invalid at computed-value time, which would drop the whole
+     declaration and hand the page the browser's default serif. */
+  --vk-font-sans: var(--font-sans, ui-sans-serif), system-ui, sans-serif;
+  --vk-font-mono: var(--font-mono, ui-monospace), monospace;
+
+  /* the primary chart series follows the brand; 2..6 keep the library's
+     colourblind-safe ramp so multi-series charts still read */
+  --vk-chart-1: #047857;
+
+  --cb-glow: rgb(4 120 87 / 22%);
+  --cb-hairline: rgb(4 120 87 / 28%);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+/* Note the selector: `:root[data-theme="dark"]` (0,1,1) has to outrank the
+   `:root` block above (0,1,0). Writing this as `:where([data-theme="dark"])`
+   like the library does would give it specificity 0 and the light values
+   would win on every dark page. */
+:root[data-theme="dark"] {
+  /* emerald-400: 11:1 on the near-black canvas, and dark text sits on it */
+  --vk-color-primary: #34d399;
+  --vk-color-primary-fg: #04231a;
+  --vk-color-primary-hover: #6ee7b7;
+  --vk-color-primary-active: #a7f3d0;
+  --vk-color-primary-subtle: #052e26;
+  --vk-color-primary-subtle-fg: #6ee7b7;
+  --vk-color-ring: #34d399;
+
+  --vk-chart-1: #34d399;
+
+  --cb-glow: rgb(52 211 153 / 16%);
+  --cb-hairline: rgb(52 211 153 / 22%);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* --- Page frame --------------------------------------------------------- */
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* The navbar is sticky, so an anchor target has to stop clear of it —
+   otherwise every /#section link in the nav lands with its heading hidden
+   underneath the bar. */
+:where(section[id], main[id]) {
+  scroll-margin-block-start: 5rem;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--vk-color-bg);
+  color: var(--vk-color-fg);
+  min-block-size: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+
+main {
+  flex: 1;
+}
+
+/* Bare links. The library styles anchors it renders itself (footer links,
+   navbar links) but leaves loose ones alone, so an <a> written in page copy
+   would otherwise fall back to the browser's blue-and-purple. Class-less
+   only, so nothing the library already owns is touched. */
+a:not([class]) {
+  color: var(--vk-color-primary);
+  text-decoration-line: underline;
+  text-decoration-thickness: from-font;
+  text-underline-offset: 0.18em;
+}
+
+a:not([class]):hover {
+  color: var(--vk-color-primary-hover);
+}
+
+/* Skip link — the first tab stop on every page. */
+.skip {
+  position: absolute;
+  inset-inline-start: var(--vk-space-3, 0.75rem);
+  inset-block-start: -100%;
+  z-index: 100;
+  padding: 0.5rem 0.875rem;
+  border-radius: var(--vk-radius-md, 8px);
+  background: var(--vk-color-primary);
+  color: var(--vk-color-primary-fg);
+  font-weight: 600;
+  font-size: 0.875rem;
+}
+
+.skip:focus-visible {
+  inset-block-start: var(--vk-space-3, 0.75rem);
+}
+
+/* --- Identity ----------------------------------------------------------- */
+
+/* Mono, tracked-out kicker used above section titles. */
+.eyebrow {
+  font-family: var(--vk-font-mono);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--vk-color-primary);
+}
+
+/* Wordmark: three signal bars, then the name. */
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+}
+
+.bars {
+  display: inline-flex;
+  align-items: flex-end;
+  gap: 2px;
+  block-size: 1rem;
+}
+
+.bars i {
+  display: block;
+  inline-size: 3px;
+  border-radius: 2px;
+  background: var(--vk-color-primary);
+  transform-origin: bottom;
+  animation: cb-bar 1.4s ease-in-out infinite;
+}
+
+.bars i:nth-child(1) { block-size: 45%; animation-delay: 0s; }
+.bars i:nth-child(2) { block-size: 100%; animation-delay: 0.18s; }
+.bars i:nth-child(3) { block-size: 65%; animation-delay: 0.36s; }
+
+@keyframes cb-bar {
+  0%, 100% { transform: scaleY(0.55); }
+  50%      { transform: scaleY(1); }
+}
+
+/* --- Hero backdrop ------------------------------------------------------ */
+
+.glow {
+  position: relative;
+  isolation: isolate;
+  overflow: clip;
+}
+
+/* Emerald bloom behind the hero. */
+.glow::before {
+  content: "";
+  position: absolute;
+  inset-block-start: -30%;
+  inset-inline-start: 50%;
+  translate: -50% 0;
+  inline-size: min(70rem, 140%);
+  aspect-ratio: 1;
+  background: radial-gradient(circle at 50% 40%, var(--cb-glow), transparent 62%);
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* Engineering grid, faded out toward the bottom. */
+.glow::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(to right, var(--vk-color-border-subtle) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--vk-color-border-subtle) 1px, transparent 1px);
+  background-size: 3rem 3rem;
+  -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, #000 20%, transparent 75%);
+  mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, #000 20%, transparent 75%);
+  z-index: -2;
+  pointer-events: none;
+}
+
+/* --- Device frame: the panel the live demo runs inside ------------------ */
+
+.device {
+  border: 1px solid var(--vk-color-border);
+  border-radius: var(--vk-radius-lg, 14px);
+  background: var(--vk-color-surface);
+  box-shadow: 0 24px 60px -28px rgb(0 0 0 / 45%);
+  overflow: hidden;
+  container-type: inline-size;
+}
+
+.device--accent {
+  border-color: var(--cb-hairline);
+}
+
+.device__bar {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  padding: 0.625rem 0.875rem;
+  border-block-end: 1px solid var(--vk-color-border-subtle);
+  background: var(--vk-color-surface-subtle);
+}
+
+.device__dots {
+  display: inline-flex;
+  gap: 0.3125rem;
+  flex: none;
+}
+
+.device__dots span {
+  inline-size: 0.5rem;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: var(--vk-color-border-strong);
+  opacity: 0.55;
+}
+
+.device__title {
+  font-family: var(--vk-font-mono);
+  font-size: 0.75rem;
+  color: var(--vk-color-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.device__body {
+  padding: var(--vk-space-4, 1rem);
+}
+
+/* The hero thread reserves its tallest height, so appending a scripted
+   turn never reflows the page below it. */
+.demo-thread {
+  min-block-size: 21rem;
+  max-block-size: 26rem;
+}
+
+/* ChatThread pins its log to the bottom, which is right for a real
+   transcript but leaves the scripted demo opening on a wall of empty
+   space. Here the turns grow downward from the top instead. */
+.demo-thread > .vk-chat-thread__log {
+  margin-block-start: 0;
+}
+
+@container (max-width: 30rem) {
+  .demo-thread {
+    min-block-size: 24rem;
+    max-block-size: 28rem;
+  }
+}
+
+/* --- Suggestion chips --------------------------------------------------- */
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4375rem;
+}
+
+.chip {
+  font: inherit;
+  font-size: 0.8125rem;
+  line-height: 1.2;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.375rem 0.6875rem;
+  border: 1px solid var(--vk-color-border);
+  border-radius: 999px;
+  background: var(--vk-color-surface);
+  color: var(--vk-color-fg-subtle);
+  cursor: pointer;
+  transition:
+    border-color 120ms ease,
+    color 120ms ease,
+    background-color 120ms ease;
+}
+
+.chip:hover:not(:disabled) {
+  border-color: var(--vk-color-primary);
+  color: var(--vk-color-fg);
+}
+
+.chip:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+/* The chart chip — the example we most want people to click. */
+.chip--hot {
+  border-color: var(--cb-hairline);
+  color: var(--vk-color-primary-subtle-fg);
+  background: var(--vk-color-primary-subtle);
+}
+
+.chip--hot:hover:not(:disabled) {
+  color: var(--vk-color-primary-subtle-fg);
+}
+
+/* --- In-chat chart ------------------------------------------------------ */
+
+/* A chart living inside a message bubble: hairline card, tight padding. */
+.in-chat-chart {
+  margin-block-start: 0.625rem;
+  padding: 0.75rem 0.75rem 0.5rem;
+  border: 1px solid var(--vk-color-border);
+  border-radius: var(--vk-radius-md, 8px);
+  background: var(--vk-color-bg);
+  inline-size: min(26rem, 100%);
+}
+
+.in-chat-chart__cap {
+  display: block;
+  margin-block-start: 0.375rem;
+  font-family: var(--vk-font-mono);
+  font-size: 0.6875rem;
+  color: var(--vk-color-muted);
+}
+
+/* Bullet list inside a message bubble. */
+.msg-list {
+  margin: 0.5rem 0 0;
+  padding-inline-start: 1.15rem;
+  display: grid;
+  gap: 0.3125rem;
+}
+
+.msg-list li {
+  font-size: 0.9375rem;
+}
+
+/* --- Stat cards ("by the numbers") -------------------------------------- */
+
+.stat-card {
+  border: 1px solid var(--vk-color-border);
+  border-radius: var(--vk-radius-lg, 14px);
+  background: var(--vk-color-surface);
+  padding: var(--vk-space-6, 1.5rem);
+  block-size: 100%;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Thin brand hairline along the top edge of every stat card. */
+.stat-card::before {
+  content: "";
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline: 0;
+  block-size: 1px;
+  background: linear-gradient(to right, transparent, var(--vk-color-primary), transparent);
+  opacity: 0.65;
+}
+
+.stat-grid {
+  display: grid;
+  gap: var(--vk-space-4, 1rem);
+  grid-template-columns: repeat(auto-fit, minmax(min(18rem, 100%), 1fr));
+}
+
+@media (min-width: 60rem) {
+  .stat-grid {
+    grid-template-columns: 1.65fr 1fr;
+  }
+  /* the line chart takes the tall left column */
+  .stat-grid > :first-child {
+    grid-row: span 2;
+  }
+}
+
+.ring-row {
+  display: flex;
+  align-items: center;
+  gap: var(--vk-space-4, 1rem);
+  flex-wrap: wrap;
+}
+
+/* --- /chat shell -------------------------------------------------------- */
+
+.chat-shell {
+  display: grid;
+  grid-template-columns: 1fr;
+  border: 1px solid var(--vk-color-border);
+  border-radius: var(--vk-radius-lg, 14px);
+  background: var(--vk-color-surface);
+  overflow: hidden;
+  /* fill the viewport minus the navbar and page gutter, so only the
+     transcript scrolls — never the page */
+  block-size: calc(100dvh - 9rem);
+  min-block-size: 30rem;
+}
+
+@media (min-width: 56rem) {
+  .chat-shell {
+    grid-template-columns: 17.5rem 1fr;
+  }
+}
+
+/* The VivekUI Sidebar, dropped into the shell's first grid column. It is
+   hidden below the shell's two-column breakpoint. */
+.chat-shell__side {
+  display: none;
+  inline-size: 100%;
+  border-inline-end: 1px solid var(--vk-color-border-subtle);
+  background: var(--vk-color-surface-subtle);
+  min-block-size: 0;
+  overflow-y: auto;
+}
+
+@media (min-width: 56rem) {
+  .chat-shell__side { display: flex; }
+}
+
+.chat-shell__main {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  min-block-size: 0;
+  min-inline-size: 0;
+}
+
+.chat-shell__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--vk-space-3, 0.75rem);
+  padding: 0.75rem 1rem;
+  border-block-end: 1px solid var(--vk-color-border-subtle);
+}
+
+/* ChatThread already handles its own scrolling (block-size:100%,
+   overflow-y:auto) — this row just has to be a definite height it can
+   fill, and must not scroll itself. */
+.chat-shell__body {
+  min-block-size: 0;
+  overflow: hidden;
+}
+
+.chat-shell__foot {
+  border-block-start: 1px solid var(--vk-color-border-subtle);
+  padding: 0.75rem 1rem 0.875rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+}
+
+.side-pad {
+  padding: 0.875rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+}
+
+/* Conversation rows are Sidebar.Item rendered `asChild` over a <button>,
+   so they keep the library's look while staying real buttons. */
+.convo {
+  text-align: start;
+  font: inherit;
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+
+/* Stack the two lines inside Sidebar.Item's own label span. Doing it on
+   `.convo` instead would override `.vk-sidebar__link`'s row layout and put
+   the icon above the title. */
+.convo > .vk-sidebar__label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.0625rem;
+  min-inline-size: 0;
+  overflow: hidden;
+}
+
+.convo__title {
+  min-inline-size: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+/* Reads and looks disabled while staying hoverable and focusable, so its
+   Tooltip is actually reachable. A truly `disabled` button fires no pointer
+   events and takes no focus, which would leave the tip dead UI. */
+.soft-disabled[aria-disabled="true"] {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Second line of a conversation row: when it was last touched. */
+.convo__meta {
+  font-family: var(--vk-font-mono);
+  font-size: 0.6875rem;
+  color: var(--vk-color-muted);
+  white-space: nowrap;
+}
+
+/* --- Utilities ---------------------------------------------------------- */
+
+.install-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.install-row > code {
+  overflow-x: auto;
+  max-inline-size: 100%;
+}
+
+.lede {
+  max-inline-size: 46ch;
+}
+
+.center {
+  margin-inline: auto;
+  text-align: center;
+}
+
+.wide-scroll {
+  overflow-x: auto;
+}
+
+/* The navbar badge is the first thing to go when the bar gets tight.
+   `vk-navbar` is the container Navbar itself declares. */
+@container vk-navbar (width < 62rem) {
+  .hide-sm {
+    display: none;
+  }
+}
+
+.vh {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* --- Reduced motion ----------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .bars i {
+    animation: none;
+  }
+
+  .chip {
+    transition: none;
+  }
 }
