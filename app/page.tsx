@@ -1,69 +1,306 @@
-import Image from "next/image";
+import Link from 'next/link'
+import {
+  AnimatedCounter,
+  Avatar,
+  Badge,
+  Button,
+  CTA,
+  ChatCodeBlock,
+  Divider,
+  FAQ,
+  FeatureGrid,
+  Heading,
+  Hero,
+  Pricing,
+  Section,
+  Stack,
+  Stepper,
+  Testimonials,
+  Text,
+} from '@the_viveksingh/vivek-ui'
+import { LineChart, ProgressRing } from '@the_viveksingh/vivek-ui/charts'
 
-export default function Home() {
+import { HeroDemo } from '@/components/hero-demo'
+import { InstallCommand } from '@/components/install-command'
+import { JsonLd } from '@/components/json-ld'
+import {
+  faqItems,
+  features,
+  heroSource,
+  messagesPerWeek,
+  plans,
+  steps,
+  testimonials,
+} from '@/data/content'
+import {
+  breadcrumbSchema,
+  faqPageSchema,
+  softwareApplicationSchema,
+} from '@/lib/schema'
+import { utm, vivekui } from '@/lib/site'
+
+const compact = (value: number) =>
+  new Intl.NumberFormat('en-US', { notation: 'compact', maximumFractionDigits: 1 }).format(value)
+
+export default function HomePage() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
+    <>
+      <JsonLd data={softwareApplicationSchema()} />
+      <JsonLd data={faqPageSchema()} />
+      <JsonLd data={breadcrumbSchema([{ name: 'Home', path: '/' }])} />
+
+      {/* --- Hero: the product, running ---------------------------------- */}
+      <div className="glow">
+        <Hero
+          size="xl"
+          layout="split"
+          padding="xl"
+          eyebrow={
+            <Badge variant="soft" tone="primary" pill>
+              Free &amp; open source · MIT
+            </Badge>
+          }
+          title="Ship a chat UI before lunch"
+          description={
+            <>
+              The chat panel beside this text is not a screenshot — it is{' '}
+              <strong>ChatThread</strong>, <strong>ChatMessage</strong>,{' '}
+              <strong>TypingIndicator</strong> and <strong>ChatCodeBlock</strong> running live,
+              from a component library with zero runtime dependencies. Fork the template, point
+              it at your model, ship.
+            </>
+          }
+          actions={
+            <>
+              <Button asChild size="lg">
+                <Link href="/chat">Try the demo</Link>
+              </Button>
+              <Button asChild size="lg" variant="outline">
+                <a href={utm(vivekui.docs, 'hero')} target="_blank" rel="noopener noreferrer">
+                  Read the docs
+                </a>
+              </Button>
+            </>
+          }
+          media={<HeroDemo />}
         />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
+      </div>
+
+      {/* --- Features ----------------------------------------------------- */}
+      <Section id="features" bleed padding="none">
+        <FeatureGrid
+          size="xl"
+          eyebrow="What you get"
+          title="The parts of a chat UI nobody wants to build twice"
+          description="Five components cover the whole surface. None of them ships a dependency, and most render on the server."
+          features={features}
+          minItemWidth="18rem"
+        />
+      </Section>
+
+      {/* --- How it works ------------------------------------------------- */}
+      <Section id="how" size="xl" background="muted">
+        <Section.Header
+          eyebrow="How it works"
+          title="Install, import, compose"
+          description="There is no config file, no CLI and no code generation step. Three commands and you are rendering messages."
+        />
+        <Stack gap={12}>
+          {/* Vertical at every width: three horizontal columns cannot fit an
+              unbreakable package name on a 390px screen. */}
+          <Stepper
+            steps={steps}
+            activeStep={steps.length}
+            orientation="vertical"
+            size="lg"
+            label="Setup steps"
+          />
+
+          <Stack gap={4}>
+            <Stack gap={2}>
+              <span className="eyebrow">The hero, in full</span>
+              <Heading level={3} size="lg">
+                This is the entire demo above
+              </Heading>
+              <Text tone="muted" className="lede">
+                Twenty-odd lines, two components and your own <code>ask()</code>. Nothing has
+                been elided.
+              </Text>
+            </Stack>
+            <ChatCodeBlock
+              code={heroSource}
+              language="tsx"
+              filename="components/demo.tsx"
+              copyLabel="Copy the demo source"
             />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+            <InstallCommand size="md" />
+          </Stack>
+        </Stack>
+      </Section>
+
+      {/* --- By the numbers ----------------------------------------------- */}
+      <Section id="numbers" size="xl">
+        <Section.Header
+          eyebrow="By the numbers"
+          title="Charts from the same package"
+          description="Both figures below are inline SVG from @the_viveksingh/vivek-ui/charts — no canvas, no d3, and a hidden data table behind each one so screen readers get the real values."
+        />
+
+        <div className="stat-grid">
+          <div className="stat-card">
+            <Stack gap={4}>
+              <Stack gap={1}>
+                <span className="eyebrow">LineChart</span>
+                <Heading level={3} size="md">
+                  Messages rendered per week
+                </Heading>
+                <Text size="sm" tone="muted">
+                  Twelve weeks across every template built on these components.
+                </Text>
+              </Stack>
+              <LineChart
+                data={messagesPerWeek}
+                title="Messages rendered per week"
+                description="Weekly message volume over twelve weeks, rising from 18.4k to 126.5k."
+                xLabel="Week"
+                yLabel="Messages"
+                height={260}
+                curve="smooth"
+                strokeWidth={2.5}
+                showGrid
+                showAxes
+                formatValue={compact}
+              />
+              <Divider />
+              <Text size="sm" tone="muted">
+                Peak week{' '}
+                <strong>
+                  <AnimatedCounter value={126_500} locale="en-US" />
+                </strong>{' '}
+                messages — rendered, not fetched.
+              </Text>
+            </Stack>
+          </div>
+
+          <div className="stat-card">
+            <Stack gap={4} align="start">
+              <Stack gap={1}>
+                <span className="eyebrow">ProgressRing</span>
+                <Heading level={3} size="md">
+                  Render reliability
+                </Heading>
+              </Stack>
+              <div className="ring-row">
+                <ProgressRing
+                  value={99.9}
+                  size={132}
+                  thickness={12}
+                  label="Render reliability"
+                  title="99.9% render reliability"
+                  description="Percentage of renders that complete without a client-side error."
+                  showValue
+                  formatValue={() => '99.9%'}
+                />
+                <Text size="sm" tone="muted" style={{ maxInlineSize: '18ch' }}>
+                  Server-safe components, so most of the tree never depends on hydration
+                  succeeding.
+                </Text>
+              </div>
+            </Stack>
+          </div>
+
+          <div className="stat-card">
+            <Stack gap={3}>
+              <span className="eyebrow">Weight</span>
+              <Heading level={3} size="2xl">
+                <AnimatedCounter value={0} locale="en-US" /> deps
+              </Heading>
+              <Text size="sm" tone="muted">
+                27 kB gzipped of CSS for the whole library, 2 kB more for all six charts. React
+                is the only peer.
+              </Text>
+            </Stack>
+          </div>
         </div>
-      </main>
-    </div>
-  );
+      </Section>
+
+      {/* --- Pricing ------------------------------------------------------ */}
+      <Section id="pricing" bleed padding="none">
+        <Pricing
+          size="xl"
+          background="muted"
+          eyebrow="Pricing"
+          title="Free, and then free"
+          description="There is nothing to buy. The second column exists so you can see what the Pricing component does with two plans."
+          plans={plans.map((plan) => ({
+            ...plan,
+            cta:
+              plan.id === 'free' ? (
+                <Button asChild fullWidth>
+                  <Link href="/chat">Try the demo</Link>
+                </Button>
+              ) : (
+                <Button asChild fullWidth variant="outline">
+                  <a href={vivekui.github} target="_blank" rel="noopener noreferrer">
+                    Star on GitHub
+                  </a>
+                </Button>
+              ),
+          }))}
+          columns={2}
+        />
+      </Section>
+
+      {/* --- Testimonials ------------------------------------------------- */}
+      <Section id="testimonials" bleed padding="none">
+        <Testimonials
+          size="xl"
+          eyebrow="Field reports"
+          title="What people do with it"
+          items={testimonials.map((testimonial) => ({
+            ...testimonial,
+            avatar: (
+              <Avatar
+                src={testimonial.avatar as string}
+                name={testimonial.author}
+                size="md"
+                imgProps={{ loading: 'lazy' }}
+              />
+            ),
+          }))}
+        />
+      </Section>
+
+      {/* --- FAQ ---------------------------------------------------------- */}
+      <Section id="faq" bleed padding="none">
+        <FAQ
+          size="lg"
+          background="muted"
+          eyebrow="FAQ"
+          title="Questions worth answering"
+          items={faqItems}
+          defaultOpen={0}
+        />
+      </Section>
+
+      {/* --- Closing CTA -------------------------------------------------- */}
+      <CTA
+        size="lg"
+        variant="primary"
+        eyebrow="Start here"
+        title="Fork it, point it at your model, ship it"
+        description="MIT licensed. No email capture, no trial, no dashboard to sign up for."
+        actions={
+          <>
+            <Button asChild size="lg" variant="solid">
+              <Link href="/chat">Open the chat demo</Link>
+            </Button>
+            <Button asChild size="lg" variant="outline">
+              <Link href="/built-with">See every component used</Link>
+            </Button>
+          </>
+        }
+      />
+    </>
+  )
 }
