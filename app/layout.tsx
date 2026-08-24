@@ -1,4 +1,4 @@
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import { Geist, Geist_Mono } from 'next/font/google'
 import { ThemeProvider, ToastProvider } from '@the_viveksingh/vivek-ui'
 
@@ -26,13 +26,18 @@ export const metadata: Metadata = {
   applicationName: site.name,
   authors: [{ name: 'Vivek Kumar Singh', url: 'https://vivekkumarsingh.in/' }],
   creator: 'Vivek Kumar Singh',
+  publisher: 'Vivek Kumar Singh',
   keywords: [
     'free ai chatbot ui template react nextjs',
     'ai chatbot ui template',
     'react chat ui components',
     'nextjs chat template',
+    'open source chat ui template',
     'chat ui library',
+    'react chat thread component',
+    'charts in chat messages',
     'zero dependency react components',
+    'tailwind alternative react components',
     'VivekUI',
   ],
   alternates: { canonical: '/' },
@@ -49,8 +54,29 @@ export const metadata: Metadata = {
     title: 'Free AI Chatbot UI Template for React & Next.js — ChatterBox',
     description: site.description,
   },
-  robots: { index: true, follow: true },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+      'max-video-preview': -1,
+    },
+  },
+  appleWebApp: { capable: true, title: site.name, statusBarStyle: 'black-translucent' },
+  formatDetection: { telephone: false, address: false, email: false },
   category: 'technology',
+}
+
+/** Paints the browser chrome to match the page in each theme. */
+export const viewport: Viewport = {
+  themeColor: [
+    { media: '(prefers-color-scheme: light)', color: '#ffffff' },
+    { media: '(prefers-color-scheme: dark)', color: '#0a0a0b' },
+  ],
+  colorScheme: 'dark light',
 }
 
 export default function RootLayout({ children }: LayoutProps<'/'>) {

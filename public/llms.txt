@@ -20,17 +20,28 @@ import, no config.
 
 ## This site
 
-- Live demo: https://aichat-vivekui.vercel.app
-- Template repository: nextjs-ai-chatbot-ui-template-vivekui
+- Live site: https://chatterbox.vivekkumarsingh.in
+- Chat demo: https://chatterbox.vivekkumarsingh.in/chat
+- Component attribution: https://chatterbox.vivekkumarsingh.in/built-with
+- Source (public, MIT): https://github.com/intellectwithvivek/chatterbox
+- Clone: git clone https://github.com/intellectwithvivek/chatterbox.git
 - Stack: Next.js 16 (App Router) · React 19 · TypeScript 5 · VivekUI 0.5.x
+- Requires: Node.js 20.9+ (22 LTS recommended)
 - Routes: / (landing) · /chat (working mock chat app) · /built-with
   (component attribution)
+
+## Why it exists
+
+ChatterBox was built by Vivek Kumar Singh to demonstrate what VivekUI can do,
+and released as a public template so developers can clone it and ship their
+own assistant UI. It is not a paid starter and has no premium tier.
 
 ## Key facts
 
 - The landing page hero is not a screenshot. It is a real ChatThread playing a
   scripted conversation, with TypingIndicator between turns and a live
-  ChatCodeBlock answer.
+  ChatCodeBlock answer. It has a pause control, and honours
+  prefers-reduced-motion by rendering the finished transcript with no timers.
 - Charts render inside chat message bubbles. In /chat, typing "show me a
   chart" or "usage stats" returns an assistant reply containing a real SVG
   BarChart inside the ChatMessage. The chart and the chat come from the same
@@ -47,6 +58,15 @@ import, no config.
   turn by turn; the typing indicator sits outside the transcript live region
   so a streaming reply does not announce repeatedly; every chart ships a
   visually hidden table of the real numbers.
+- 39 distinct VivekUI components render this site, and no other UI dependency
+  is installed.
+
+## How to use it with any LLM
+
+The components never touch the network. Wire ChatInput's onSubmit to a server
+action or route handler, then append tokens to the last message as they
+arrive; ChatThread renders the stream. Any provider works — Anthropic, OpenAI,
+Mistral, or an open-weights model on your own hardware.
 
 ## VivekUI chat components used here
 

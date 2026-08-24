@@ -20,6 +20,7 @@ import {
 } from '@the_viveksingh/vivek-ui'
 import { LineChart, ProgressRing } from '@the_viveksingh/vivek-ui/charts'
 
+import { CloneBlock } from '@/components/clone-block'
 import { HeroDemo } from '@/components/hero-demo'
 import { InstallCommand } from '@/components/install-command'
 import { JsonLd } from '@/components/json-ld'
@@ -35,9 +36,12 @@ import {
 import {
   breadcrumbSchema,
   faqPageSchema,
+  howToSchema,
   softwareApplicationSchema,
+  webSiteSchema,
 } from '@/lib/schema'
-import { utm, vivekui } from '@/lib/site'
+import { GitHubIcon } from '@/components/icons'
+import { site, utm, vivekui } from '@/lib/site'
 
 const compact = (value: number) =>
   new Intl.NumberFormat('en-US', { notation: 'compact', maximumFractionDigits: 1 }).format(value)
@@ -45,7 +49,9 @@ const compact = (value: number) =>
 export default function HomePage() {
   return (
     <>
+      <JsonLd data={webSiteSchema()} />
       <JsonLd data={softwareApplicationSchema()} />
+      <JsonLd data={howToSchema()} />
       <JsonLd data={faqPageSchema()} />
       <JsonLd data={breadcrumbSchema([{ name: 'Home', path: '/' }])} />
 
@@ -283,6 +289,43 @@ export default function HomePage() {
         />
       </Section>
 
+      {/* --- Clone -------------------------------------------------------- */}
+      <Section id="clone" size="lg">
+        <Section.Header
+          eyebrow="Open source"
+          title="Clone it and make it yours"
+          description="ChatterBox is a public repository, not a paywalled starter. Nothing is stripped out of the free version, because there is no other version."
+        />
+        <div className="clone-grid">
+          <CloneBlock />
+          <div className="stat-card">
+            <Stack gap={3}>
+              <span className="eyebrow">What you are cloning</span>
+              <ul className="msg-list">
+                <li>3 routes, fully server-rendered and statically prerendered</li>
+                <li>
+                  <strong>39 VivekUI components</strong>, no other UI dependency
+                </li>
+                <li>Dark mode, emerald theming, and a pre-paint theme script</li>
+                <li>Metadata, sitemap, robots, JSON-LD and llms.txt already wired</li>
+                <li>No API keys, no env vars, no backend to stand up</li>
+              </ul>
+              <Text size="sm" tone="muted">
+                Built by{' '}
+                <a
+                  href={utm(vivekui.author, 'clone')}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {vivekui.authorName}
+                </a>{' '}
+                to show what VivekUI can do.
+              </Text>
+            </Stack>
+          </div>
+        </div>
+      </Section>
+
       {/* --- Closing CTA -------------------------------------------------- */}
       <CTA
         size="lg"
@@ -294,6 +337,11 @@ export default function HomePage() {
           <>
             <Button asChild size="lg" variant="solid">
               <Link href="/chat">Open the chat demo</Link>
+            </Button>
+            <Button asChild size="lg" variant="outline">
+              <a href={site.repoUrl} target="_blank" rel="noopener noreferrer">
+                <GitHubIcon /> Clone the repo
+              </a>
             </Button>
             <Button asChild size="lg" variant="outline">
               <Link href="/built-with">See every component used</Link>
