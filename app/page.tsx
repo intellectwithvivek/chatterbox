@@ -199,7 +199,7 @@ export default function HomePage() {
               <div className="ring-row">
                 <ProgressRing
                   value={99.9}
-                  size={132}
+                  diameter={132}
                   thickness={12}
                   label="Render reliability"
                   title="99.9% render reliability"
@@ -285,7 +285,7 @@ export default function HomePage() {
           eyebrow="FAQ"
           title="Questions worth answering"
           items={faqItems}
-          defaultOpen={0}
+          defaultOpenIndex={0}
         />
       </Section>
 
@@ -329,7 +329,7 @@ export default function HomePage() {
       {/* --- Closing CTA -------------------------------------------------- */}
       <CTA
         size="lg"
-        variant="primary"
+        background="primary"
         eyebrow="Start here"
         title="Fork it, point it at your model, ship it"
         description="MIT licensed. No email capture, no trial, no dashboard to sign up for."
